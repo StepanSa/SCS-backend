@@ -1,1 +1,1 @@
-web: python backendapi/manage.py runserver 0.0.0.0:\$PORT
+web: gunicorn backendapi/manage:app --log-file -
