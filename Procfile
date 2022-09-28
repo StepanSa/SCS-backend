@@ -1,1 +1,1 @@
-web: gunicorn backendapi.wsgi
+web: gunicorn backendapi.wsgi -b xx.xxx.xxx.xx:8000
