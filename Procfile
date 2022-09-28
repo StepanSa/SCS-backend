@@ -1,1 +1,1 @@
-web: gunicorn backendapi.wsgi -b xx.xxx.xxx.xx:8000
+web: gunicorn backendapi.wsgi:application --preload -b xx.xxx.xxx.xx:8000
