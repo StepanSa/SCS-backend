@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'backendapi.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django',
+        'CLIENT': {
+            "host": "mongodb+srv://stepans:mataanst@cluster0.498hd5l.mongodb.net/?retryWrites=true&w=majority",
+            "name": "SportCommunitySearch",
+            "authMechanism": "SCRAM-SHA-1"  # For atlas cloud db
+        }
     }
 }
 
