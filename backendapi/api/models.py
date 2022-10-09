@@ -13,7 +13,7 @@ class Sport(models.Model):
     name = models.CharField(max_length=30)
 
 
-class Field(models.Model):
+class Location(models.Model):
     sportId = models.ForeignKey('Sport', on_delete=models.CASCADE)
     address = models.CharField(max_length=150)
     tgChannel = models.CharField(max_length=50)
