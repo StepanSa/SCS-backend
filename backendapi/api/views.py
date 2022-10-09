@@ -30,13 +30,16 @@ def login_(request):
                         ('bebbeb@gmail.com', 'beeeeeeb'),
                         ('bebebebey@gmail.com', 'bebebebey')]
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         username = request.POST['email']
         password1 = request.POST['password']
-        # username = username.split("@")[0]
 
         if (username, password1) not in registered_users:
             return HttpResponse("Wrong email or password")
+        # username = username.split("@")[0]
+
+        # user = authenticate(username=username, password=password1)
+        # login(request, user)
 
         return redirect('index.html')
 
