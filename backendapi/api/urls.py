@@ -16,5 +16,4 @@ urlpatterns = [
     path('location/<int:id>', locationApi),
     path('sport/', sportApi),
     path('sport/<int:id>', sportApi),
-    # path('', include(router.urls))
 ]

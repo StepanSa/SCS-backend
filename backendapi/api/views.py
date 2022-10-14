@@ -1,7 +1,3 @@
-from rest_framework import viewsets
-# from django.contrib.auth.models import User
-from .serializers import UserSerializer
-
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
@@ -90,12 +86,5 @@ def locationApi(request, id=None):
         location = Location.objects.get(locationId=id)
         location.delete()
         return JsonResponse("Deleted successfully", safe=False)
-
-
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
-
 
 
