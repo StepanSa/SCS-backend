@@ -1,13 +1,6 @@
-from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include
-from rest_framework import routers
 from .views import login_, logout_
-from django.views.generic import TemplateView
 from .views import userApi, locationApi, sportApi
-from django.contrib.auth import views as auth_views
-# router = routers.DefaultRouter()
-# router.register('users', UserViewSet)
 
 urlpatterns = [
     path('user/', userApi),

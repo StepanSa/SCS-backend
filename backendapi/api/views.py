@@ -1,12 +1,9 @@
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-
 from .models import User, Sport, Location
 from .serializers import UserSerializer, SportSerializer, LocationSerializer
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 
@@ -108,5 +105,3 @@ def locationApi(request, id=None):
         location = Location.objects.get(locationId=id)
         location.delete()
         return JsonResponse("Deleted successfully", safe=False)
-
-
