@@ -5,6 +5,28 @@ from django.http.response import JsonResponse
 
 from .models import User, Sport, Location
 from .serializers import UserSerializer, SportSerializer, LocationSerializer
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.http import HttpResponse
+
+
+def login_(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        messages.success(request, "Logged in Successfully!!")
+        return redirect(request, 'home.html')
+    else:
+        return HttpResponse('Bad Credentials')
+
+
+def logout_(request):
+    logout(request)
+    messages.success(request, "Logged out Successfully!!")
+    return redirect('home')
 
 
 @csrf_exempt
