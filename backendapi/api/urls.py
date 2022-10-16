@@ -16,6 +16,6 @@ urlpatterns = [
     path('location/<int:id>', locationApi),
     path('sport/', sportApi),
     path('sport/<int:id>', sportApi),
-    path("login/", login_(), name="login",),
-    path("logout/", logout_(), name="logout",),
+    path("login/", login_()),
+    path("logout/", logout_()),
 ]

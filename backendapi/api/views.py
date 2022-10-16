@@ -18,7 +18,7 @@ def login_(request):
     if user is not None:
         login(request, user)
         messages.success(request, "Logged in Successfully!!")
-        return redirect(request, 'home.html')
+        return HttpResponse('ok')
     else:
         return HttpResponse('Bad Credentials')
 
@@ -26,7 +26,7 @@ def login_(request):
 def logout_(request):
     logout(request)
     messages.success(request, "Logged out Successfully!!")
-    return redirect('home')
+    return HttpResponse('ok')
 
 
 @csrf_exempt

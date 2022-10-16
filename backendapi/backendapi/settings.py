@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
+import ssl
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,7 +91,9 @@ DATABASES = {
         'CLIENT': {
             "host": "mongodb+srv://stepans:mataanst@sportcommunitysearch.a34y7vk.mongodb.net/?retryWrites=true&w=majority",
             "name": "SportCommunitySearch",
-            "authMechanism": "SCRAM-SHA-1"  # For atlas cloud db
+            "authMechanism": "SCRAM-SHA-1",  # For atlas cloud db
+            "SSL": True,
+            "SSL_CERT_REQS": ssl.CERT_NONE,
         }
     }
 }
