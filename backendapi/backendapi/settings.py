@@ -10,7 +10,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import django
 from pathlib import Path
 # django.setup()
+import ssl
 
+LOGIN_REDIRECT_URL = "index"
+LOGIN_URL = "login"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,14 +46,20 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'api'
+    'api',
+    'crispy_forms',
 ]
+
+
+# MIGRATION_MODULES = {
+#     'sites': 'contrib.sites.migrations'
+# }
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+     # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -89,14 +98,17 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
+        'NAME': 'beb2',
+        'ENFORCE_SCHEMA': False,
         'CLIENT': {
             "host": "mongodb+srv://stepans:mataanst@sportcommunitysearch.a34y7vk.mongodb.net/?retryWrites=true&w=majority",
-            "name": "SportCommunitySearch",
-            "authMechanism": "SCRAM-SHA-1"  # For atlas cloud db
+            "name": "beb2",
+            "authMechanism": "SCRAM-SHA-1",  # For atlas cloud db
+            'SSL': True,
+            'SSL_CERT_REQS': ssl.CERT_NONE,
         }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
