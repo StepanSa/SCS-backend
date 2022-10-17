@@ -1,10 +1,29 @@
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
+from django.contrib.auth.models import User
+from .models import Sport, Location
+from .serializers import SportSerializer, LocationSerializer
+from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from .serializers import UserSerializer
 
-from .models import User, Sport, Location
-from .serializers import UserSerializer, SportSerializer, LocationSerializer
+
+@csrf_exempt
+def login_(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password1 = request.POST['password']
+
+        user = authenticate(username=username, password=password1)
+
+        if user is not None:
+            login(request, user)
+            # messages.success(request, "Logged In Sucessfully!!")
+            return HttpResponse({'GGWP'})
+        else:
+            # messages.error(request, "Bad Credentials!!")
+            return HttpResponse({'badbadbadboy'})
 
 
 @csrf_exempt

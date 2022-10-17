@@ -1,14 +1,17 @@
 from rest_framework import serializers
-from .models import User, Sport, Location
+from django.contrib.auth.models import User
+from .models import Sport, Location
 
 
 class UserSerializer(serializers.ModelSerializer):
-    birthDate = serializers.DateField(input_formats=['%Y-%m-%d'])
-
     class Meta:
         model = User
-        fields = ('userId', 'firstName', 'lastName', 'email', 'password', 'birthDate')
+        fields = ('username', 'password')
         extra_kwargs = {'password': {'write_only': True, 'required': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
 
 class SportSerializer(serializers.ModelSerializer):
@@ -20,6 +23,6 @@ class SportSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ('locationId, sportId', 'address', 'tgChannel')
+        fields = ('locationId', 'sportName', 'address', 'tgChannel')
 
 

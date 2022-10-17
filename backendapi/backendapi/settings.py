@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import ssl
+
+LOGIN_REDIRECT_URL = "index"
+LOGIN_URL = "login"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,17 +28,16 @@ SECRET_KEY = 'django-insecure-v(tm#chx1a-#337w6ff*7_2wy$+se9f6nvxhk)aypn0!es93a$
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+SITE_ID = 1
 
 ALLOWED_HOSTS = []
-
-LOGIN_REDIRECT_URL = "index"
-LOGIN_URL = "login"
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -90,8 +93,10 @@ DATABASES = {
         'ENGINE': 'djongo',
         'CLIENT': {
             "host": "mongodb+srv://stepans:mataanst@sportcommunitysearch.a34y7vk.mongodb.net/?retryWrites=true&w=majority",
-            "name": "SportCommunitySearch",
-            "authMechanism": "SCRAM-SHA-1"  # For atlas cloud db
+            "name": "SCS",
+            "authMechanism": "SCRAM-SHA-1",  # For atlas cloud db
+            "SSL": True,
+            "SSL_CERT_REQS": ssl.CERT_NONE,
         }
     }
 }
