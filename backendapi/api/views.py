@@ -12,8 +12,10 @@ from .serializers import UserSerializer
 @csrf_exempt
 def login_(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password1 = request.POST['password']
+        body = JSONParser().parse(request)
+
+        username = body['username']
+        password1 = body['password']
 
         user = authenticate(username=username, password=password1)
 
@@ -37,7 +39,9 @@ def userApi(request, id=None):
         users_serializer = UserSerializer(data=user_data)
         if users_serializer.is_valid():
             users_serializer.save()
-            return JsonResponse("Added successfully", safe=False)
+            response = JsonResponse("Added successfully", safe=False)
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            return response
         return JsonResponse("Failed to add", safe=False)
     elif request.method == 'PUT':
         user_data = JSONParser().parse(request)
