@@ -81,7 +81,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backendapi.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3006"
 ]
 
 
@@ -93,10 +93,10 @@ DATABASES = {
         'ENGINE': 'djongo',
         'CLIENT': {
             "host": "mongodb+srv://stepans:mataanst@sportcommunitysearch.a34y7vk.mongodb.net/?retryWrites=true&w=majority",
-            "name": "SCS",
+            "name": "beb2",
             "authMechanism": "SCRAM-SHA-1",  # For atlas cloud db
             "SSL": True,
-            "SSL_CERT_REQS": ssl.CERT_NONE,
+            "SSL_CERT_REQS": ssl.CERT_NONE
         }
     }
 }

@@ -1,3 +1,4 @@
 /.idea
 /backendapi/settings.py
 /__pycache__/
+/.venv
