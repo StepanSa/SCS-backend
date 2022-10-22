@@ -68,7 +68,7 @@ def userApi(request, id=None):
             print(user_serializer.error_messages)
             return JsonResponse("Failed to add", safe=False, status=400)
 
-        # users_serializer.save()
+        user_serializer.save()
         return JsonResponse("Added successfully", safe=False, status=201)
 
     elif request.method == 'PUT':
