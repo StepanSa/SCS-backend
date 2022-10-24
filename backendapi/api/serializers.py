@@ -23,6 +23,6 @@ class SportSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ('locationId', 'sportName', 'address', 'tgChannel')
+        fields = ('sportName', 'address', 'tgChannel')
 
 

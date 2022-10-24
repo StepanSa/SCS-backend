@@ -106,7 +106,7 @@ def locationApi(request, id=None):
             return JsonResponse("Updated successfully", safe=False)
         return JsonResponse("Failed to Update")
     elif request.method == 'DELETE':
-        location = Location.objects.get(locationId=id)
+        location = Location.objects.get(id=id)
         location.delete()
         return JsonResponse("Deleted successfully", safe=False)
 
