@@ -1,7 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from django.core.exceptions import ValidationError
@@ -13,6 +12,13 @@ from .serializers import SportSerializer, LocationSerializer
 from .serializers import UserSerializer
 from .uitls import keys_in
 
+
+def test_cookie(request):
+    if request.method == 'GET':
+        res = JsonResponse("test", safe=False)
+        res.set_cookie('test', 'message')
+        return res
+
 @csrf_exempt
 def login_(request):
     if request.method == 'POST':
@@ -21,15 +27,22 @@ def login_(request):
         username = body['username']
         password = body['password']
 
+        users = User.objects.filter(username=username)
+
+        if len(users) == 0:
+            return JsonResponse("User with such username doen't exist", safe=False, status=400)
+
         user = authenticate(username=username, password=password)
 
         if user is not None:
             login(request, user)
             # messages.success(request, "Logged In Sucessfully!!")
-            return HttpResponse({'GGWP'})
+            res = JsonResponse("User is logged in", safe=False, status=200)
+            res['Access-Control-Allow-Credentials'] = True
+            return res
         else:
             # messages.error(request, "Bad Credentials!!")
-            return HttpResponse({'badbadbadboy'})
+            return JsonResponse("Wrong password", safe=False, status=400)
 
 
 @csrf_exempt

@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-v(tm#chx1a-#337w6ff*7_2wy$+se9f6nvxhk)aypn0!es93a$
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-SITE_ID = 1
+# SITE_ID = 1
 
 ALLOWED_HOSTS = []
 
@@ -46,8 +46,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'api',
+    'api'
 ]
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'backendapi.urls'
@@ -80,10 +82,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backendapi.wsgi.application'
 
-CORS_ALLOWED_ORIGINS = [
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3006",
+#     "http://localhost:8000"
+# ]
+
+CORS_ORIGIN_WHITELIST = [
     "http://localhost:3006"
 ]
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
