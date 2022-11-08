@@ -12,6 +12,17 @@ from .serializers import SportSerializer, LocationSerializer
 from .serializers import UserSerializer
 from .uitls import keys_in
 
+def get_info_user(request):
+    if request.method == 'GET':
+        if not request.user.is_authenticated:
+            return JsonResponse("You are not authenticated", safe=False, status=400)
+        print(request.user.username)
+        print(request.user.email)
+        return JsonResponse({
+            "username": request.user.username,
+            "email": request.user.email
+        }, safe=False, status=200)
+
 @csrf_exempt
 def login_(request):
     print('inside login')
