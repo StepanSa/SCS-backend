@@ -30,7 +30,13 @@ SECRET_KEY = 'django-insecure-v(tm#chx1a-#337w6ff*7_2wy$+se9f6nvxhk)aypn0!es93a$
 DEBUG = True
 # SITE_ID = 1
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "http://localhost:3006",
+    "http://127.0.0.1:3006",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "127.0.0.1"
+]
 
 
 # Application definition
@@ -62,6 +68,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
+# SESSION_COOKIE_SAMESITE = None
+# CSRF_COOKIE_SAMESITE = None
+
 ROOT_URLCONF = 'backendapi.urls'
 
 TEMPLATES = [
@@ -82,15 +91,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backendapi.wsgi.application'
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3006",
-#     "http://localhost:8000"
-# ]
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3006"
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3006",
+    "http://localhost:8000",
+    "http://127.0.0.1:3006",
+    "http://127.0.0.1:8000"
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3006",
+    "http://127.0.0.1:3006",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_CREDENTIALS = True
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 

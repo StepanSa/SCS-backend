@@ -12,16 +12,15 @@ from .serializers import SportSerializer, LocationSerializer
 from .serializers import UserSerializer
 from .uitls import keys_in
 
-
-def test_cookie(request):
-    if request.method == 'GET':
-        res = JsonResponse("test", safe=False)
-        res.set_cookie('test', 'message')
-        return res
-
 @csrf_exempt
 def login_(request):
+    print('inside login')
     if request.method == 'POST':
+        print('inside post')
+        if request.user.is_authenticated:
+            return JsonResponse("You are already authenticated", safe=False, status=200)
+        print(request.user)
+
         body = JSONParser().parse(request)
 
         username = body['username']
@@ -35,14 +34,20 @@ def login_(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
+            print("in if")
             login(request, user)
             # messages.success(request, "Logged In Sucessfully!!")
             res = JsonResponse("User is logged in", safe=False, status=200)
-            res['Access-Control-Allow-Credentials'] = True
+            res['Access-Control-Allow-Credentials'] = 'true'
+            # res['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3006'
+            res['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,UPDATE,OPTIONS'
+            res['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
             return res
         else:
             # messages.error(request, "Bad Credentials!!")
             return JsonResponse("Wrong password", safe=False, status=400)
+    elif request.method == 'OPTIONS':
+        print('options')
 
 
 @csrf_exempt

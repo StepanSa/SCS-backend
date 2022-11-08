@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import userApi, locationApi, sportApi, test_cookie
+from .views import userApi, locationApi, sportApi
 from . import views
 
 urlpatterns = [
@@ -9,6 +9,5 @@ urlpatterns = [
     path('location/<int:id>', locationApi),
     path('sport/', sportApi),
     path('sport/<int:id>', sportApi),
-    path('test/', test_cookie),
     path("login/", views.login_, name="login"),
 ]
