@@ -10,13 +10,10 @@ from rest_framework.parsers import JSONParser
 from .models import Sport, Location
 from .serializers import SportSerializer, LocationSerializer
 from .serializers import UserSerializer
-<<<<<<< HEAD
 
 import requests
-=======
 from .uitls import keys_in
 
->>>>>>> cd82687c861f88b530f6d73fa2e865d1fb3adf46
 @csrf_exempt
 def login_(request):
     print('inside login')
