@@ -192,7 +192,7 @@ def locationApi(request, id=None):
             for location in locations:
                 location_serializer = LocationSerializer(location)
 
-                photolink = 'http://' + ip + ':' + port + '/static/' + str(location['id']) + '.jpg'
+                photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
 
                 response = dict(location_serializer.data)
                 response.update({'photoUrl': photolink})
