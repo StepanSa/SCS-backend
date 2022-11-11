@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .serializers import UserSerializer
 
-
+import requests
 @csrf_exempt
 def login_(request):
     if request.method == 'POST':
@@ -85,11 +85,33 @@ def sportApi(request, id=None):
 
 
 @csrf_exempt
+def locations(request):
+    if request.method == 'GET':
+        locations_ = Location.objects.all()
+        locations_serializer = LocationSerializer(locations_, many=True)
+        return JsonResponse(locations_serializer.data, safe=False)
+
+
+@csrf_exempt
 def locationApi(request, id=None):
     if request.method == 'GET':
-        locations = Location.objects.all()
-        locations_serializer = LocationSerializer(locations, many=True)
-        return JsonResponse(locations_serializer.data, safe=False)
+        location = Location.objects.get(id=id)
+        location_serializer = LocationSerializer(location)
+
+        port = request.get_port()
+
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        photolink = 'http://' + ip + ':' + port + '/static/stepan.jpg'
+
+        response = dict(location_serializer.data)
+        response.update({'photoUrl': photolink})
+
+        return JsonResponse(response, safe=False)
     elif request.method == 'POST':
         location_data = JSONParser().parse(request)
         locations_serializer = LocationSerializer(data=location_data)
@@ -109,5 +131,3 @@ def locationApi(request, id=None):
         location = Location.objects.get(id=id)
         location.delete()
         return JsonResponse("Deleted successfully", safe=False)
-
-
