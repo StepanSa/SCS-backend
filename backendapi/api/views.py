@@ -181,7 +181,7 @@ def locationApi(request, id=None):
         else:
             ip = request.META.get('REMOTE_ADDR')
 
-        photolink = 'http://' + ip + ':' + port + '/static/stepan.jpg'
+        photolink = 'http://' + ip + ':' + port + '/static/' + str(id) + '.jpg'
 
         response = dict(location_serializer.data)
         response.update({'photoUrl': photolink})

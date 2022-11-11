@@ -1,9 +1,5 @@
 /.idea
 /backendapi/settings.py
 /**/__pycache__/
-<<<<<<< HEAD
 /.venv
-__pycache__g
-=======
-/.venv
->>>>>>> cd82687c861f88b530f6d73fa2e865d1fb3adf46
+__pycache__
