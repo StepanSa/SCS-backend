@@ -19,7 +19,6 @@ class SportSerializer(serializers.ModelSerializer):
         model = Sport
         fields = ('sportId', 'name')
 
-
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
