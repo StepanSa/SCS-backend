@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
     "http://127.0.0.1:3006",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "127.0.0.1"
+    "127.0.0.1",
+    "localhost:8000"
 ]
 
 
@@ -123,7 +124,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'CLIENT': {
             "host": "mongodb+srv://stepans:mataanst@sportcommunitysearch.a34y7vk.mongodb.net/?retryWrites=true&w=majority",
-            "name": "beb2",
+            "name": "SCS",
             "authMechanism": "SCRAM-SHA-1",  # For atlas cloud db
             "SSL": True,
             "SSL_CERT_REQS": ssl.CERT_NONE

@@ -23,6 +23,9 @@ class SportSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ('locationId', 'sportName', 'address', 'tgChannel')
+        fields = ('id', 'sportName', 'address', 'tgChannel')
 
-
+class LocationSerializerAnonUser(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ('id', 'sportName', 'address')

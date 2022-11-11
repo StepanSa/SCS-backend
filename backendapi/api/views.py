@@ -8,7 +8,7 @@ from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from rest_framework.parsers import JSONParser
 from .models import Sport, Location
-from .serializers import SportSerializer, LocationSerializer
+from .serializers import SportSerializer, LocationSerializer, LocationSerializerAnonUser
 from .serializers import UserSerializer
 from .uitls import keys_in
 
@@ -171,9 +171,14 @@ def sportApi(request, id=None):
 @csrf_exempt
 def locationApi(request, id=None):
     if request.method == 'GET':
-        locations = Location.objects.all()
-        locations_serializer = LocationSerializer(locations, many=True)
-        return JsonResponse(locations_serializer.data, safe=False)
+        if request.user.is_authenticated:
+            locations = Location.objects.all()
+            locations_serializer = LocationSerializer(locations, many=True)
+            return JsonResponse(locations_serializer.data, safe=False)
+        else:
+            locations = Location.objects.all()
+            locations_serializer = LocationSerializerAnonUser(locations, many=True)
+            return JsonResponse(locations_serializer.data, safe=False)
     elif request.method == 'POST':
         location_data = JSONParser().parse(request)
         locations_serializer = LocationSerializer(data=location_data)
@@ -183,14 +188,14 @@ def locationApi(request, id=None):
         return JsonResponse("Failed to add", safe=False)
     elif request.method == 'PUT':
         location_data = JSONParser().parse(request)
-        location = Location.objects.get(locationId=location_data['locationId'])
+        location = Location.objects.get(id=location_data['id'])
         locations_serializer = LocationSerializer(location, data=location_data)
         if locations_serializer.is_valid():
             locations_serializer.save()
             return JsonResponse("Updated successfully", safe=False)
         return JsonResponse("Failed to Update")
     elif request.method == 'DELETE':
-        location = Location.objects.get(locationId=id)
+        location = Location.objects.get(id=id)
         location.delete()
         return JsonResponse("Deleted successfully", safe=False)
 
