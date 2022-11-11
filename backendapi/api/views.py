@@ -8,7 +8,7 @@ from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from rest_framework.parsers import JSONParser
 from .models import Sport, Location
-from .serializers import SportSerializer, LocationSerializer
+from .serializers import SportSerializer, LocationSerializer, LocationSerializerAnonUser
 from .serializers import UserSerializer
 from .uitls import keys_in
 
@@ -167,13 +167,57 @@ def sportApi(request, id=None):
         sport.delete()
         return JsonResponse("Deleted successfully", safe=False)
 
+@csrf_exempt
+def locations(request):
+    if request.method == 'GET':
+        locations_ = Location.objects.all()
+        locations_serializer = LocationSerializer(locations_, many=True)
+        return JsonResponse(locations_serializer.data, safe=False)
 
 @csrf_exempt
 def locationApi(request, id=None):
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            locations = Location.objects.all()
+            res_loc = []
+
+            port = request.get_port()
+
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+
+            for location in locations:
+                location_serializer = LocationSerializer(location)
+
+                photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
+
+                response = dict(location_serializer.data)
+                response.update({'photoUrl': photolink})
+                res_loc.append(response)
+            return JsonResponse(res_loc, safe=False)
         locations = Location.objects.all()
-        locations_serializer = LocationSerializer(locations, many=True)
-        return JsonResponse(locations_serializer.data, safe=False)
+        res_loc = []
+
+        port = request.get_port()
+
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        for location in locations:
+            location_serializer = LocationSerializerAnonUser(location)
+
+            photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
+
+            response = dict(location_serializer.data)
+            response.update({'photoUrl': photolink})
+            res_loc.append(response)
+        return JsonResponse(res_loc, safe=False)
     elif request.method == 'POST':
         location_data = JSONParser().parse(request)
         locations_serializer = LocationSerializer(data=location_data)
@@ -193,5 +237,3 @@ def locationApi(request, id=None):
         location = Location.objects.get(id=id)
         location.delete()
         return JsonResponse("Deleted successfully", safe=False)
-
-
