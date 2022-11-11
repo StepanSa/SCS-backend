@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import ssl
-
+import os.path
 LOGIN_REDIRECT_URL = "index"
 LOGIN_URL = "login"
 
@@ -28,9 +28,15 @@ SECRET_KEY = 'django-insecure-v(tm#chx1a-#337w6ff*7_2wy$+se9f6nvxhk)aypn0!es93a$
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-SITE_ID = 1
+# SITE_ID = 1
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "http://localhost:3006",
+    "http://127.0.0.1:3006",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "127.0.0.1"
+]
 
 
 # Application definition
@@ -46,8 +52,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'api',
+    'api'
 ]
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,8 +65,11 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
+
+# SESSION_COOKIE_SAMESITE = None
+# CSRF_COOKIE_SAMESITE = None
 
 ROOT_URLCONF = 'backendapi.urls'
 
@@ -81,10 +92,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backendapi.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3006"
+    "http://localhost:3006",
+    "http://localhost:8000",
+    "http://127.0.0.1:3006",
+    "http://127.0.0.1:8000"
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3006",
+    "http://127.0.0.1:3006",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_CREDENTIALS = True
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -137,7 +167,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = (
+    os.path.join("C:/images"),
+)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

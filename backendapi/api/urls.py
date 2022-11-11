@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import userApi, locationApi, sportApi
+from .views import userApi, locationApi, sportApi, get_info_user, login_
 from . import views
 
 urlpatterns = [
@@ -9,5 +9,6 @@ urlpatterns = [
     path('location/<int:id>', locationApi),
     path('sport/', sportApi),
     path('sport/<int:id>', sportApi),
-    path("login/", views.login_, name="login"),
+    path("login/", login_, name="login"),
+    path("user_info/", get_info_user),
 ]
