@@ -1,16 +1,18 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Sport, Location
+from .models import Sport, Location, Profile
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('username', 'password', 'email', 'first_name', 'last_name')
+        model = Profile
+        fields = ('username', 'password', 'email', 'first_name',
+                  'last_name', 'instagram_link', 'facebook_link',
+                  'telegram_link', 'twitter_link')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = Profile.objects.create_user(**validated_data)
         return user
 
 
@@ -19,10 +21,12 @@ class SportSerializer(serializers.ModelSerializer):
         model = Sport
         fields = ('sportId', 'name')
 
+
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'sportName', 'address', 'tgChannel')
+
 
 class LocationSerializerAnonUser(serializers.ModelSerializer):
     class Meta:
