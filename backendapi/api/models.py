@@ -1,12 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
-# class User(models.Model):
-#     firstName = models.CharField(max_length=30)
-#     lastName = models.CharField(max_length=30)
-#     email = models.CharField(max_length=50)
-#     password = models.CharField(max_length=30)
-#     birthDate = models.DateField(blank=True, null=True)
+class Profile(User):
+    instagram_link = models.URLField(max_length=100, null=True)
+    facebook_link = models.URLField(max_length=100, null=True)
+    telegram_link = models.URLField(max_length=100, null=True)
+    twitter_link = models.URLField(max_length=100, null=True)
 
 
 class Location(models.Model):
