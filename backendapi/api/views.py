@@ -12,6 +12,7 @@ from .serializers import SportSerializer, LocationSerializer, LocationSerializer
 from .serializers import UserSerializer
 from .uitls import keys_in
 
+
 def get_info_user(request):
     if request.method == 'GET':
         if not request.user.is_authenticated:
@@ -22,6 +23,7 @@ def get_info_user(request):
             "username": request.user.username,
             "email": request.user.email
         }, safe=False, status=200)
+
 
 @csrf_exempt
 def login_(request):
@@ -167,12 +169,14 @@ def sportApi(request, id=None):
         sport.delete()
         return JsonResponse("Deleted successfully", safe=False)
 
+
 @csrf_exempt
 def locations(request):
     if request.method == 'GET':
         locations_ = Location.objects.all()
         locations_serializer = LocationSerializer(locations_, many=True)
         return JsonResponse(locations_serializer.data, safe=False)
+
 
 @csrf_exempt
 def locationApi(request, id=None):
