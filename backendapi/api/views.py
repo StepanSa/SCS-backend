@@ -7,10 +7,12 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from rest_framework.parsers import JSONParser
-from .models import Sport, Location
-from .serializers import SportSerializer, LocationSerializer, LocationSerializerAnonUser
+from .models import Location
+from .serializers import LocationSerializer, LocationSerializerAnonUser
 from .serializers import UserSerializer
 from .uitls import keys_in
+from .functions import haversine
+
 
 def get_info_user(request):
     if request.method == 'GET':
@@ -142,37 +144,41 @@ def userApi(request, id=None):
 
 
 @csrf_exempt
-def sportApi(request, id=None):
-    if request.method == 'GET':
-        sports = Sport.objects.all()
-        sports_serializer = SportSerializer(sports, many=True)
-        return JsonResponse(sports_serializer.data, safe=False)
-    elif request.method == 'POST':
-        sport_data = JSONParser().parse(request)
-        sports_serializer = SportSerializer(data=sport_data)
-        if sports_serializer.is_valid():
-            sports_serializer.save()
-            return JsonResponse("Added successfully", safe=False)
-        return JsonResponse("Failed to add", safe=False)
-    elif request.method == 'PUT':
-        sport_data = JSONParser().parse(request)
-        sport = User.objects.get(userId=sport_data['SportId'])
-        sports_serializer = SportSerializer(sport, data=sport_data)
-        if sports_serializer.is_valid():
-            sports_serializer.save()
-            return JsonResponse("Updated successfully", safe=False)
-        return JsonResponse("Failed to Update")
-    elif request.method == 'DELETE':
-        sport = Sport.objects.get(sportId=id)
-        sport.delete()
-        return JsonResponse("Deleted successfully", safe=False)
-
-@csrf_exempt
 def locations(request):
     if request.method == 'GET':
         locations_ = Location.objects.all()
         locations_serializer = LocationSerializer(locations_, many=True)
         return JsonResponse(locations_serializer.data, safe=False)
+
+
+@csrf_exempt
+def locationsInRadius(request, radius=10000):
+    if request.method == 'GET':
+        data = request.body
+        print(data)
+        locations = Location.objects.all()
+        res_loc = []
+
+        port = request.get_port()
+
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        for location in locations:
+            if haversine(1, 1, location.latitude, location.longitude) <= radius:
+                location_serializer = LocationSerializerAnonUser(location)
+
+                photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
+
+                response = dict(location_serializer.data)
+                response.update({'photoUrl': photolink})
+                res_loc.append(response)
+        return JsonResponse(res_loc, safe=False)
+
+
 
 @csrf_exempt
 def locationApi(request, id=None):
@@ -220,6 +226,7 @@ def locationApi(request, id=None):
         return JsonResponse(res_loc, safe=False)
     elif request.method == 'POST':
         location_data = JSONParser().parse(request)
+        print(location_data)
         locations_serializer = LocationSerializer(data=location_data)
         if locations_serializer.is_valid():
             locations_serializer.save()

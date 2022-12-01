@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Sport, Location
+from .models import Location
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,15 +14,11 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class SportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sport
-        fields = ('sportId', 'name')
-
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'sportName', 'address', 'tgChannel')
+
 
 class LocationSerializerAnonUser(serializers.ModelSerializer):
     class Meta:

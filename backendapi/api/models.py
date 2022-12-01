@@ -9,12 +9,11 @@ from django.db import models
 #     birthDate = models.DateField(blank=True, null=True)
 
 
-class Sport(models.Model):
-    name = models.CharField(max_length=30)
-
-
 class Location(models.Model):
     sportName = models.CharField(max_length=30, default='')
     address = models.CharField(max_length=150)
     tgChannel = models.URLField(max_length=100)
+    longitude = models.FloatField(default=0.0)
+    latitude = models.FloatField(default=0.0)
+
 
