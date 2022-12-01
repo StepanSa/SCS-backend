@@ -12,6 +12,7 @@ from .serializers import LocationSerializer, LocationSerializerAnonUser
 from .serializers import UserSerializer
 from .uitls import keys_in
 from .functions import haversine
+import json
 
 
 def get_info_user(request):
@@ -152,10 +153,14 @@ def locations(request):
 
 
 @csrf_exempt
-def locationsInRadius(request, radius=10000):
+def locationsInRadius(request):
     if request.method == 'GET':
-        data = request.body
-        print(data)
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        radius = body['radius']
+        lat = body['latitude']
+        lon = body['longitude']
+
         locations = Location.objects.all()
         res_loc = []
 
@@ -168,7 +173,7 @@ def locationsInRadius(request, radius=10000):
             ip = request.META.get('REMOTE_ADDR')
 
         for location in locations:
-            if haversine(1, 1, location.latitude, location.longitude) <= radius:
+            if haversine(lon, lat, location.longitude, location.latitude) <= radius:
                 location_serializer = LocationSerializerAnonUser(location)
 
                 photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
