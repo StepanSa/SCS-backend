@@ -7,10 +7,13 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from rest_framework.parsers import JSONParser
-from .models import Sport, Location
-from .serializers import SportSerializer, LocationSerializer, LocationSerializerAnonUser
+from .models import Location
+from .serializers import LocationSerializer, LocationSerializerAnonUser
 from .serializers import UserSerializer
 from .uitls import keys_in
+from .functions import haversine
+import json
+
 
 
 def get_info_user(request):
@@ -179,6 +182,38 @@ def locations(request):
 
 
 @csrf_exempt
+def locationsInRadius(request):
+    if request.method == 'GET':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        radius = body['radius']
+        lat = body['latitude']
+        lon = body['longitude']
+
+        locations = Location.objects.all()
+        res_loc = []
+
+        port = request.get_port()
+
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        for location in locations:
+            if haversine(lon, lat, location.longitude, location.latitude) <= radius:
+                location_serializer = LocationSerializerAnonUser(location)
+
+                photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
+
+                response = dict(location_serializer.data)
+                response.update({'photoUrl': photolink})
+                res_loc.append(response)
+        return JsonResponse(res_loc, safe=False)
+
+
+@csrf_exempt
 def locationApi(request, id=None):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -224,6 +259,7 @@ def locationApi(request, id=None):
         return JsonResponse(res_loc, safe=False)
     elif request.method == 'POST':
         location_data = JSONParser().parse(request)
+        print(location_data)
         locations_serializer = LocationSerializer(data=location_data)
         if locations_serializer.is_valid():
             locations_serializer.save()

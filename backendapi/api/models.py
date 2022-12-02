@@ -9,14 +9,9 @@ class Profile(User):
     twitter_link = models.URLField(max_length=100, null=True)
 
 
-class Sport(models.Model):
-    name = models.CharField(max_length=30)
-
-
 class Location(models.Model):
     sportName = models.CharField(max_length=30, default='')
     address = models.CharField(max_length=150)
     tgChannel = models.URLField(max_length=100)
-    latitude = models.FloatField(max_length=20)
-    longitude = models.FloatField(max_length=20)
-
+    longitude = models.FloatField(default=0.0)
+    latitude = models.FloatField(default=0.0)
