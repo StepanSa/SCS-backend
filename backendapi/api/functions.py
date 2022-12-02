@@ -1,6 +1,18 @@
 from math import radians, cos, sin, asin, sqrt
 
 
+def get_port_ip(request):
+    port = request.get_port()
+
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+
+    return ip, port
+
+
 def haversine(lon1, lat1, lon2, lat2):
     # convert decimal degrees to radians
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
