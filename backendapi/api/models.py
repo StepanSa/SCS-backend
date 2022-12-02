@@ -15,5 +15,3 @@ class Location(models.Model):
     tgChannel = models.URLField(max_length=100)
     longitude = models.FloatField(default=0.0)
     latitude = models.FloatField(default=0.0)
-
-

@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ('id', 'sportName', 'address', 'tgChannel')
+        fields = ('id', 'sportName', 'address', 'tgChannel', 'latitude', 'longitude')
 
 
 class LocationSerializerAnonUser(serializers.ModelSerializer):

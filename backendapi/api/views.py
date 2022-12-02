@@ -15,6 +15,7 @@ from .functions import haversine
 import json
 
 
+
 def get_info_user(request):
     if request.method == 'GET':
         if not request.user.is_authenticated:
@@ -25,6 +26,7 @@ def get_info_user(request):
             "username": request.user.username,
             "email": request.user.email
         }, safe=False, status=200)
+
 
 @csrf_exempt
 def login_(request):
@@ -145,6 +147,33 @@ def userApi(request, id=None):
 
 
 @csrf_exempt
+def sportApi(request, id=None):
+    if request.method == 'GET':
+        sports = Sport.objects.all()
+        sports_serializer = SportSerializer(sports, many=True)
+        return JsonResponse(sports_serializer.data, safe=False)
+    elif request.method == 'POST':
+        sport_data = JSONParser().parse(request)
+        sports_serializer = SportSerializer(data=sport_data)
+        if sports_serializer.is_valid():
+            sports_serializer.save()
+            return JsonResponse("Added successfully", safe=False)
+        return JsonResponse("Failed to add", safe=False)
+    elif request.method == 'PUT':
+        sport_data = JSONParser().parse(request)
+        sport = User.objects.get(userId=sport_data['SportId'])
+        sports_serializer = SportSerializer(sport, data=sport_data)
+        if sports_serializer.is_valid():
+            sports_serializer.save()
+            return JsonResponse("Updated successfully", safe=False)
+        return JsonResponse("Failed to Update")
+    elif request.method == 'DELETE':
+        sport = Sport.objects.get(sportId=id)
+        sport.delete()
+        return JsonResponse("Deleted successfully", safe=False)
+
+
+@csrf_exempt
 def locations(request):
     if request.method == 'GET':
         locations_ = Location.objects.all()
@@ -182,7 +211,6 @@ def locationsInRadius(request):
                 response.update({'photoUrl': photolink})
                 res_loc.append(response)
         return JsonResponse(res_loc, safe=False)
-
 
 
 @csrf_exempt
