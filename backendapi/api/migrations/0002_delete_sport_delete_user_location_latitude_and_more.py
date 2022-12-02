@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='location',
-            name='longtitude',
+            name='longitude',
             field=models.FloatField(default=0.0),
         ),
     ]
