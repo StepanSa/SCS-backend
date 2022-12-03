@@ -7,10 +7,13 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from rest_framework.parsers import JSONParser
-from .models import Sport, Location
-from .serializers import SportSerializer, LocationSerializer
+from .models import Location
+from .serializers import LocationSerializer, LocationSerializerAnonUser
 from .serializers import UserSerializer
 from .uitls import keys_in
+from .functions import haversine, get_port_ip
+import json
+
 
 def get_info_user(request):
     if request.method == 'GET':
@@ -22,6 +25,7 @@ def get_info_user(request):
             "username": request.user.username,
             "email": request.user.email
         }, safe=False, status=200)
+
 
 @csrf_exempt
 def login_(request):
@@ -64,9 +68,20 @@ def login_(request):
 @csrf_exempt
 def userApi(request, id=None):
     if request.method == 'GET':
-        users = User.objects.all()
-        user_serializer = UserSerializer(users, many=True)
-        return JsonResponse(user_serializer.data, safe=False)
+        if id is None:
+            users = User.objects.all()
+            user_serializer = UserSerializer(users, many=True)
+            return JsonResponse(user_serializer.data, safe=False)
+        else:
+            try:
+                user = User.objects.get(id=id)
+            except:
+                error = "User with id = " + str(id) + " does not exist"
+                return JsonResponse(error, safe=False)
+
+            user_serializer = UserSerializer(user)
+            return JsonResponse(user_serializer.data, safe=False)
+
     elif request.method == 'POST':
         body = JSONParser().parse(request)
 
@@ -135,63 +150,109 @@ def userApi(request, id=None):
 
     elif request.method == 'DELETE':
         user = User.objects.get(pk=id)
+
         if user is None:
             return JsonResponse("There is no user with such id", safe=False, status=400)
+
         user.delete()
+
         return JsonResponse("Deleted successfully", safe=False, status=200)
 
 
 @csrf_exempt
-def sportApi(request, id=None):
+def locationsInRadius(request):
     if request.method == 'GET':
-        sports = Sport.objects.all()
-        sports_serializer = SportSerializer(sports, many=True)
-        return JsonResponse(sports_serializer.data, safe=False)
-    elif request.method == 'POST':
-        sport_data = JSONParser().parse(request)
-        sports_serializer = SportSerializer(data=sport_data)
-        if sports_serializer.is_valid():
-            sports_serializer.save()
-            return JsonResponse("Added successfully", safe=False)
-        return JsonResponse("Failed to add", safe=False)
-    elif request.method == 'PUT':
-        sport_data = JSONParser().parse(request)
-        sport = User.objects.get(userId=sport_data['SportId'])
-        sports_serializer = SportSerializer(sport, data=sport_data)
-        if sports_serializer.is_valid():
-            sports_serializer.save()
-            return JsonResponse("Updated successfully", safe=False)
-        return JsonResponse("Failed to Update")
-    elif request.method == 'DELETE':
-        sport = Sport.objects.get(sportId=id)
-        sport.delete()
-        return JsonResponse("Deleted successfully", safe=False)
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        radius = body['radius']
+        lat = body['latitude']
+        lon = body['longitude']
+
+        locations = Location.objects.all()
+        res_loc = []
+
+        ip, port = get_port_ip(request)
+
+        for location in locations:
+            if haversine(lon, lat, location.longitude, location.latitude) <= radius:
+
+                if request.user.is_authenticated:
+                    location_serializer = LocationSerializer(location)
+                else:
+                    location_serializer = LocationSerializerAnonUser(location)
+
+                photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
+
+                response = dict(location_serializer.data)
+                response.update({'photoUrl': photolink})
+                res_loc.append(response)
+
+        return JsonResponse(res_loc, safe=False)
 
 
 @csrf_exempt
 def locationApi(request, id=None):
     if request.method == 'GET':
-        locations = Location.objects.all()
-        locations_serializer = LocationSerializer(locations, many=True)
-        return JsonResponse(locations_serializer.data, safe=False)
+        if id is None:
+            locations = Location.objects.all()
+            res_loc = []
+
+            ip, port = get_port_ip(request)
+
+            for location in locations:
+                if request.user.is_authenticated:
+                    location_serializer = LocationSerializer(location)
+                else:
+                    location_serializer = LocationSerializerAnonUser(location)
+
+                photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
+
+                response = dict(location_serializer.data)
+                response.update({'photoUrl': photolink})
+                res_loc.append(response)
+
+            return JsonResponse(res_loc, safe=False)
+
+        else:
+
+            location = Location.objects.get(id=id)
+            ip, port = get_port_ip(request)
+
+            if request.user.is_authenticated:
+                location_serializer = LocationSerializer(location)
+            else:
+                location_serializer = LocationSerializerAnonUser(location)
+
+            photolink = 'http://' + ip + ':' + port + '/static/' + str(location.id) + '.jpg'
+            response = dict(location_serializer.data)
+            response.update({'photoUrl': photolink})
+            return JsonResponse(response, safe=False)
+
     elif request.method == 'POST':
+
         location_data = JSONParser().parse(request)
         locations_serializer = LocationSerializer(data=location_data)
+
         if locations_serializer.is_valid():
             locations_serializer.save()
             return JsonResponse("Added successfully", safe=False)
+
         return JsonResponse("Failed to add", safe=False)
+
     elif request.method == 'PUT':
         location_data = JSONParser().parse(request)
-        location = Location.objects.get(locationId=location_data['locationId'])
+        location = Location.objects.get(id=id)
         locations_serializer = LocationSerializer(location, data=location_data)
+
         if locations_serializer.is_valid():
             locations_serializer.save()
             return JsonResponse("Updated successfully", safe=False)
-        return JsonResponse("Failed to Update")
+
+        return JsonResponse("Failed to Update", safe=False)
+
     elif request.method == 'DELETE':
+
         location = Location.objects.get(id=id)
         location.delete()
+
         return JsonResponse("Deleted successfully", safe=False)
-
-
