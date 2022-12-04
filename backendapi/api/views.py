@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -14,6 +14,13 @@ from .uitls import keys_in
 from .functions import haversine, get_port_ip
 import json
 
+@csrf_exempt
+def logout_(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            logout(request)
+            return JsonResponse("You are logged out", safe=False, status=200)
+        return JsonResponse("You are not authenticated", safe=False, status=400)
 
 def get_info_user(request):
     if request.method == 'GET':
