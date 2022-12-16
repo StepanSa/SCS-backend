@@ -19,7 +19,8 @@ def logout_(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
             logout(request)
-            return JsonResponse("You are logged out", safe=False, status=200)
+            response = JsonResponse("You are logged out", safe=False, status=200)
+            return response
         return JsonResponse("You are not authenticated", safe=False, status=400)
 
 def get_info_user(request):
@@ -169,11 +170,13 @@ def userApi(request, id=None):
 @csrf_exempt
 def locationsInRadius(request):
     if request.method == 'GET':
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        radius = body['radius']
-        lat = body['latitude']
-        lon = body['longitude']
+        # body_unicode = request.body.decode('utf-8')
+        # body = json.loads(body_unicode)
+        radius = float(request.GET.get('radius'))
+        lat = float(request.GET.get('latitude'))
+        lon = float(request.GET.get('longitude'))
+
+        print(lon, lat)
 
         locations = Location.objects.all()
         res_loc = []
